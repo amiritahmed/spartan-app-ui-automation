@@ -1,0 +1,37 @@
+package com.devopinc.step_definitions;
+
+import com.devopinc.pages.SpartanHomePage;
+import com.devopinc.utils.Driver;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import org.junit.Assert;
+
+public class LandOnAddSpartanStepDef {
+
+    SpartanHomePage spartanHomePage;
+    //WebDriverWait wait = new WebDriverWait(Driver.getDriver(), );
+
+    @Given("User is on Spartan home page")
+    public void user_is_on_spartan_home_page() {
+        Driver.getDriver().get("http://3.147.55.173:8000");
+        Driver.getDriver().manage().window().maximize();
+        String actualHomeTitle = Driver.getDriver().getTitle();
+        Assert.assertEquals("Spartan Home", actualHomeTitle);
+    }
+
+    @When("User clicks on Add Spartan linkText")
+    public void user_clicks_on_add_spartan_linkText() {
+        spartanHomePage = new SpartanHomePage();
+        spartanHomePage.addSpartan();
+    }
+
+    @Then("Verify the user is Add Spartan page")
+    public void verify_the_user_is_add_spartan_page() {
+        String actualTitle = Driver.getDriver().getTitle();
+        String expectedTitle = "Add New Spartan";
+        Assert.assertEquals("Spartan Home", expectedTitle, actualTitle);
+    }
+
+
+}
