@@ -1,11 +1,13 @@
 package com.devopinc.pages;
 
 import com.devopinc.utils.Driver;
+import com.github.javafaker.Faker;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.Random;
 
 public class AddSpartanPage {
 
@@ -14,12 +16,12 @@ public class AddSpartanPage {
     }
 
     @FindBy(css = "input#name")
-    private WebElement nameInputBox;
+    public WebElement nameInputBox;
 
     public void inputName(){
-//        Faker faker = new Faker();
-//        String name = faker.name().firstName();
-        nameInputBox.sendKeys("Amir");
+        Faker faker = new Faker();
+        String name = faker.name().firstName();
+        nameInputBox.sendKeys(name);
     }
 
     @FindBy(css = "select#genderSelect")
@@ -27,15 +29,15 @@ public class AddSpartanPage {
 
     public void selectGender(){
         Select select = new Select(genderInputBox);
-        select.selectByValue("MALE");
+        int n = new Random().nextInt(2);
+        String gen = (n==1)? "MALE" : "FEMALE";
+        select.selectByValue(gen);
+
     }
 
     @FindBy(css = "input#phone")
-    private WebElement phoneInputBox;
+    public WebElement phoneInputBox;
 
-    public void inputPhoneNumber(String phoneNumber){
-        phoneInputBox.sendKeys(phoneNumber);
-    }
 
     @FindBy(xpath = "//button[text()='Save']")
     private WebElement saveButton;
@@ -44,7 +46,7 @@ public class AddSpartanPage {
         saveButton.click();
     }
 
-    @FindBy(xpath = "//a[@class='navbar-brand']/i[@class='fa fa-unlock']")
+    @FindBy(xpath = "//a[@class='navbar-brand']")
     public WebElement spartanList;
 
 

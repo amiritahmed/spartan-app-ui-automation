@@ -1,80 +1,107 @@
 package com.devopinc.utils;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.OpenTelemetry;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 
 public class Driver {
 
     private Driver(){
     }
 
-    private static WebDriver driver;
+    private static ThreadLocal<WebDriver> driverPool = new ThreadLocal<>();
 
-    public  static WebDriver getDriver(){
+    public static WebDriver getDriver(){
+        if(driverPool.get() == null){
+            String browserType = (System.getProperty("browser")) != null? System.getProperty("browser") : ConfigurationReader.getProperty("browser");
+            String gridUrl = (System.getProperty("GRID_URL")) != null? ConfigurationReader.getProperty("local.grid"): ConfigurationReader.getProperty("grid.url");
 
-        if(driver == null){
-            String browser  = ConfigurationReader.getProperty("browser");
+            switch (browserType){
+                case "chrome" -> {
+                    ChromeOptions options = new ChromeOptions();
+                    options.addArguments("--start-maximized");
+                    options.addArguments("--remote-allow-origins=*");
+                    driverPool.set(new ChromeDriver(options));
+                }
+                case "chrome-headless" -> {
+                    ChromeOptions options = new ChromeOptions();
+                    options.addArguments("--headless");
+                    driverPool.set(new ChromeDriver(options));
+                }
+                case "firefox" -> {
+                    FirefoxOptions options = new FirefoxOptions();
+                    WebDriver firefoxDriver = new FirefoxDriver(options);
+                    firefoxDriver.manage().window().fullscreen();
+                    driverPool.set(firefoxDriver);
+                }
+                case "firefox-headless" -> {
+                    FirefoxOptions options = new FirefoxOptions();
+                    options.addArguments("--headless");
+                    driverPool.set(new FirefoxDriver(options));
+                }
+                case "remote-chrome"->{
+                    DesiredCapabilities capabilities = new DesiredCapabilities();
+                    capabilities.setBrowserName("chrome");
 
-            switch(browser) {
-                case "chrome":
-                    WebDriverManager.chromedriver().setup();
-                    driver = new ChromeDriver();
-                    break;
+                    try {
+                        driverPool.set(new RemoteWebDriver(new URL(ConfigurationReader.getProperty("local.grid")+"/wd/hub"), capabilities));
+                    } catch (MalformedURLException e) {
 
-                case "firefox":
-                    WebDriverManager.firefoxdriver().setup();
-                    driver = new FirefoxDriver();
-                    break;
-
-                case "chrome-remote":
-                    try{
-                        //To request grid to run test on chrome
-                        ChromeOptions chromeOptions = new ChromeOptions();
-                        URL url = new URL("http://54.146.79.189:4444/wd/hub");  //http://18.206.13.27:4444/wd/hub
-                        driver = new RemoteWebDriver(url, chromeOptions);
-
-                    }catch (MalformedURLException e){
-                        e.printStackTrace();
                     }
-                    break;
+                }
+                case "remote-firefox"->{
+                    DesiredCapabilities firefox = new DesiredCapabilities();
+                    firefox.setBrowserName("firefox");
 
-                case "firefox-remote":
+                    try {
+                        driverPool.set(new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), firefox));
+                    } catch (MalformedURLException e) {
 
-                    try{
-                        //To request grid to run test on firefox
-                        FirefoxOptions firefoxOptions = new FirefoxOptions();
-                        URL url = new URL("http://54.146.79.189:4444/wd/hub ");
-                        driver = new RemoteWebDriver(url, firefoxOptions);
-
-                    }catch(MalformedURLException e){
-                        e.printStackTrace();
                     }
+                }
+                case "remote-chrome-aws"->{
+                    ChromeOptions remoteOptions = new ChromeOptions();
+                    remoteOptions.addArguments("--start-maximized");
+                    //remoteOptions.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu");
+                    try {
+                        driverPool.set(new RemoteWebDriver(new URL(gridUrl+"/wd/hub"), remoteOptions));
+                    } catch (MalformedURLException e) {
 
-                    break;
+                    }
+                }
+                case "remote-firefox-aws"->{
+                    FirefoxOptions firefoxOptions1 = new FirefoxOptions();
+                    firefoxOptions1.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu");
+                    try {
+                        driverPool.set( new RemoteWebDriver(new URL(gridUrl+"/wd/hub"), firefoxOptions1));
+                    } catch (MalformedURLException e) {
 
-                default:
-                    throw new RuntimeException("Wrong browser " + browser);
+                    }
+                }
             }
-
         }
-
-        return driver;
+        return driverPool.get();
     }
 
     public static void closeDriver(){
-        if(driver != null){
-            driver.quit();
-            driver=null;
+        if (driverPool.get()!=null){
+            //driverPool.set(null);
+            driverPool.get().quit();
+            driverPool.remove();
         }
     }
+
+
 
 
 

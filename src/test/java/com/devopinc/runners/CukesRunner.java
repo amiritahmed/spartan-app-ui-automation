@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
         features = "src/test/resources/features",
         glue = "com/devopinc/step_definitions",
         dryRun = false,
-        tags = "@Spartan"
+        tags = "@spartan"
         //publish = true //generating a report with public link
 )
 

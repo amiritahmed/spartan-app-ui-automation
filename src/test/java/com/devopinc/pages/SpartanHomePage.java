@@ -12,11 +12,8 @@ public class SpartanHomePage {
     }
 
     @FindBy(xpath = "//i[text()='Add Spartan']")
-    private WebElement addSpartan;
+    public WebElement addSpartan;
 
-    public void addSpartan(){
-        addSpartan.click();
-    }
 
 
 }
