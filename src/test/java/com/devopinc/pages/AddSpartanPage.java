@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class AddSpartanPage {
 
-    public AddSpartanPage(){
+    public AddSpartanPage() {
         PageFactory.initElements(Driver.getDriver(), this);
     }
 

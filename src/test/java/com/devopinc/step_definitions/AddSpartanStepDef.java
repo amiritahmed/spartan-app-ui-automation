@@ -4,7 +4,6 @@ import com.devopinc.pages.AddSpartanPage;
 import com.devopinc.utils.BrowserUtils;
 import com.devopinc.utils.Driver;
 import com.github.javafaker.Faker;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -34,26 +33,24 @@ public class AddSpartanStepDef {
         addSpartanPage.genderInputBox.sendKeys(gender);
     }
 
-    @And("user enters a valid phone number")
+    @When("user enters a valid phone number")
     public void user_enters_a_valid_phone_number() {
         //addSpartanPage.phoneInputBox.sendKeys(browserUtils.phoneNumber);
         addSpartanPage.phoneInputBox.sendKeys("4032648094");
     }
 
-    @And("user clicks on the save button")
+    @When("user clicks on the save button")
     public void user_clicks_on_the_save_button() {
         addSpartanPage.clickSaveButton();
     }
 
-    /*
-     TODO:
-      Spartan list contains the latest added spartan
-     */
     @Then("verify user added a spartan to the list successfully")
     public void verify_user_added_a_spartan_to_the_list_successfully() {
         wait.until(ExpectedConditions.visibilityOf(addSpartanPage.spartanList));
         BrowserUtils.verifyTitle("All Spartan");
     }
+
+
 
 
 }

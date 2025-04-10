@@ -1,6 +1,8 @@
 package com.devopinc.step_definitions;
 
 import com.devopinc.pages.SpartanHomePage;
+
+import com.devopinc.utils.ConfigurationReader;
 import com.devopinc.utils.Driver;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -18,10 +20,9 @@ public class LandOnAddSpartanStepDef {
 
     @Given("User is on Spartan home page")
     public void user_is_on_spartan_home_page() {
-        Driver.getDriver().get("http://3.147.55.173:8000/");
-        Driver.getDriver().manage().window().maximize();
-        String actualHomeTitle = Driver.getDriver().getTitle();
-        Assert.assertEquals("Spartan Home", actualHomeTitle);
+        wait.until(ExpectedConditions.titleIs("Spartan Home"));
+//        String actualHomeTitle = Driver.getDriver().getTitle();
+//        Assert.assertEquals("Spartan Home", actualHomeTitle);
     }
 
     @When("User clicks on Add Spartan linkText")

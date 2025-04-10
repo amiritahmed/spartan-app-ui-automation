@@ -7,13 +7,11 @@ import org.openqa.selenium.support.PageFactory;
 
 public class SpartanHomePage {
 
-    public SpartanHomePage(){
+    public SpartanHomePage() {
         PageFactory.initElements(Driver.getDriver(), this);
     }
 
     @FindBy(xpath = "//i[text()='Add Spartan']")
     public WebElement addSpartan;
-
-
 
 }
