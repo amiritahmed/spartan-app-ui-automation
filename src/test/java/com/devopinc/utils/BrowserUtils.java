@@ -14,8 +14,6 @@ import java.util.List;
 
 public class BrowserUtils {
 
-
-
     public static void sleep(int second){
         second *= 1000;
         try{
@@ -41,9 +39,6 @@ public class BrowserUtils {
         WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(20));
         wait.until(ExpectedConditions.titleContains(title));
     }
-
-
-
 
     public static void verifyURLContains(String expectedInURL){
         Assert.assertTrue(Driver.getDriver().getCurrentUrl().contains(expectedInURL));
@@ -140,7 +135,6 @@ public class BrowserUtils {
         }
     }
 
-
     public static void verifyElementDisplayed(WebElement element) {
         try {
             Assert.assertTrue("Element not visible: " + element, element.isDisplayed());
@@ -174,8 +168,5 @@ public class BrowserUtils {
             }
         }
     }
-
-
-
 
 }
