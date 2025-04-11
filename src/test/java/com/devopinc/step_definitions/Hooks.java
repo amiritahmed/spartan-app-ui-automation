@@ -20,7 +20,7 @@ public class Hooks {
         //Driver.getDriver().navigate().refresh();
     }
 
-    @After
+    @After("@spartan")
     public void teardownMethod(Scenario scenario){
         BrowserUtils.sleep(2);
         byte[] screenshot = ((TakesScreenshot) Driver.getDriver()).getScreenshotAs(OutputType.BYTES);
