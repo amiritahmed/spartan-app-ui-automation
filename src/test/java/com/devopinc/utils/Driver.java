@@ -50,7 +50,6 @@ public class Driver {
                 case "remote-chrome"->{
                     DesiredCapabilities capabilities = new DesiredCapabilities();
                     capabilities.setBrowserName("chrome");
-
                     try {
                         driverPool.set(new RemoteWebDriver(new URL(ConfigurationReader.getProperty("local.grid")+"/wd/hub"), capabilities));
                     } catch (MalformedURLException e) {
@@ -60,7 +59,6 @@ public class Driver {
                 case "remote-firefox"->{
                     DesiredCapabilities firefox = new DesiredCapabilities();
                     firefox.setBrowserName("firefox");
-
                     try {
                         driverPool.set(new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), firefox));
                     } catch (MalformedURLException e) {
